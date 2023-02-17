@@ -40,4 +40,3 @@ class EvoClientExample(object):
         return self.make_request(method, url)
     
 
-
