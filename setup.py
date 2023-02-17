@@ -39,4 +39,12 @@ class EvoClientExample(object):
 
         return self.make_request(method, url)
     
+    def get_messages_list(self):
+        url = f'/api/v1/messages/list'
+        method = 'GET'
 
+        return self.make_request(method, url)
+
+
+print(EvoClientExample(AUTH_TOKEN).get_messages_list())
+    
