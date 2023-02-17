@@ -1,0 +1,7 @@
+environs==9.5.0
+greenlet==2.0.2
+marshmallow==3.19.0
+packaging==23.0
+python-dotenv==0.21.1
+SQLAlchemy==2.0.3
+typing_extensions==4.5.0
