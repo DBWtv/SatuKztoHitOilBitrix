@@ -28,7 +28,7 @@ def add_to_db(id):
         session.commit()
         stmt = True     
 
-    return print(stmt)
+    return stmt
 
 def check_sttm_db(id):
     try:
