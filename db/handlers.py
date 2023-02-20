@@ -1,4 +1,5 @@
 from .connection import session, Orders, NoResultFound, PhoneNumbers
+from datetime import datetime
 
 def add_to_db(id):
     try:
@@ -9,7 +10,9 @@ def add_to_db(id):
         session.add(new)
         session.commit()
         stmt = True     
-
+        with open('log', 'r+') as log:
+                    log.seek(0, 2)
+                    log.write(f'{datetime.now()}  {new} write to DB \n')
     return stmt
 
 def check_sttm_db(id):
@@ -28,6 +31,9 @@ def add_numbers_to_db(id, number):
         new = PhoneNumbers(id=id, number=number)
         session.add(new)
         session.commit()
+        with open('log', 'r+') as log:
+                    log.seek(0, 2)
+                    log.write(f'{datetime.now()}  {new} write to DB \n')
     
 def check_number_exist(number):
     try:

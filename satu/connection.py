@@ -33,7 +33,11 @@ class EvoClientExample(object):
             pass
 
         response_data = response.read()
+        with open('log', 'r+') as log:
+                    log.seek(0, 2)
+                    log.write(f'{json.loads(response_data.decode())} \n')
         return json.loads(response_data.decode())
+        
 
     def get_order_list(self, params=None):
         url = f'/api/v1/orders/list?{params}'
