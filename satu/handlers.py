@@ -1,5 +1,3 @@
-import sys
-sys.path.append('/home/dmitry/dev/SatuKz')
 from db.handlers import check_sttm_db, add_to_db, check_number_exist
 from bitrix.handlers import post_new_deal, save_exist_contact
 

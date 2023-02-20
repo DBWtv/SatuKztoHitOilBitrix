@@ -1,5 +1,3 @@
-import sys
-sys.path.append('/home/dmitry/dev/SatuKz')
 from .connection import session, Orders, NoResultFound, PhoneNumbers
 
 def add_to_db(id):
