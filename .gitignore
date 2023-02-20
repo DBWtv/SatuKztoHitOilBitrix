@@ -1,4 +1,4 @@
 .env
 env/
-orders.sqlite3
+*.sqlite3
 __pycache__/

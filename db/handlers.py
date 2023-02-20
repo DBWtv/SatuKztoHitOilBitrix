@@ -1,4 +1,6 @@
-from db.connection import session, Orders, NoResultFound
+import sys
+sys.path.append('/home/dmitry/dev/SatuKz')
+from .connection import session, Orders, NoResultFound, PhoneNumbers
 
 def add_to_db(id):
     try:
@@ -20,3 +22,19 @@ def check_sttm_db(id):
         stmt = True
 
     return stmt
+
+def add_numbers_to_db(id, number):
+    try:
+        session.query(PhoneNumbers).filter(PhoneNumbers.id == id).one()
+    except NoResultFound:
+        new = PhoneNumbers(id=id, number=number)
+        session.add(new)
+        session.commit()
+    
+def check_number_exist(number):
+    try:
+        ph = session.query(PhoneNumbers).filter(PhoneNumbers.number == number).one()
+        return(ph.id)
+    except NoResultFound:
+        return False
+    

@@ -1,9 +1,11 @@
 import sys
 sys.path.append('/home/dmitry/dev/SatuKz')
-from db.handlers import check_sttm_db, add_to_db
-from satu.connection import order_list, message_list
+from db.handlers import check_sttm_db, add_to_db, check_number_exist
+from bitrix.handlers import post_new_deal, save_exist_contact
 
-def orders_dict_to_bitrix(item):
+
+
+def orders_dict_to_bitrix(item, bitrix_contact_id=None):
     products = item['products'][0]
     product_title = products['name']
     title = f'Заявка с сайта satu.kz "{product_title}"'
@@ -17,14 +19,18 @@ def orders_dict_to_bitrix(item):
             'HAS_PHONE': 'Y',
             'STATUS_ID': 'NEW',
             'OPENED': 'Y',
-            'PHONE': [{'VALUE': item['phone']}],
+            'CONTACT_ID': bitrix_contact_id,
         },
         'params': {'REGISTER_SONET_EVENT': 'Y'}
     }
-    return print(orders_dict)
+
+    if bitrix_contact_id == None:
+        orders_dict['PHONE'] = [{'VALUE': item['phone']}]
+
+    return post_new_deal(orders_dict)
 
 
-def messages_dict_to_bitrix(item):
+def messages_dict_to_bitrix(item, bitrix_contact_id=None):
     subject = item['subject']
     message = item['message']
     messages_dict = {
@@ -34,25 +40,32 @@ def messages_dict_to_bitrix(item):
             'HAS_PHONE': 'Y',
             'STATUS_ID': 'NEW',
             'OPENED': 'Y',
-            'PHONE': [{'VALUE': item['phone']}],
+            'CONTACT_ID': bitrix_contact_id,
         },
         'params': {'REGISTER_SONET_EVENT': 'Y'}
     }
-    return print(messages_dict)
+
+    if bitrix_contact_id == None:
+        messages_dict['PHONE'] = [{'VALUE': item['phone']}]
+
+    return post_new_deal(messages_dict)
 
 
 def orders_db_work(messages_list, orders_list):
+    save_exist_contact()
     for order in orders_list['orders']:
         if check_sttm_db(order['id']):
             if add_to_db(order['id']):
-                print('new order')
-                orders_dict_to_bitrix(order)
+                if check_number_exist(order['phone']):
+                    orders_dict_to_bitrix(order, bitrix_contact_id=check_number_exist(order['phone']))
+                else:
+                    orders_dict_to_bitrix(order)
+
     for message in messages_list['messages']:
         if check_sttm_db(message['id']):
             if add_to_db(message['id']):
-                print('new message')
-                messages_dict_to_bitrix(message)
+                if check_number_exist(message['phone']):
+                    messages_dict_to_bitrix(message, bitrix_contact_id=check_number_exist(message['phone']))
+                else:
+                    messages_dict_to_bitrix(message)
     
-
-
-print(orders_db_work(orders_list=order_list, messages_list=message_list))
