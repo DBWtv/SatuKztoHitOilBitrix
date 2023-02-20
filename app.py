@@ -4,6 +4,10 @@ from satu.connection import satu_api
 from datetime import datetime
 
 def main():
+    '''
+        App takes new orders and messages on satu.kz API.
+        Then made deals in bitrix24
+    '''
     with open('log', 'r+') as log:
                     log.seek(0, 2)
                     log.write(f'{datetime.now()} ... Starting app \n')
@@ -17,4 +21,3 @@ def main():
 
 if __name__=="__main__":
     main()
-    
