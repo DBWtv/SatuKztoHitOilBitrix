@@ -33,7 +33,7 @@ def add_numbers_to_db(id, number):
     
 def check_number_exist(number):
     try:
-        ph = session.query(PhoneNumbers).filter(PhoneNumbers.number == number).one()
+        ph = session.query(PhoneNumbers).filter(PhoneNumbers.number == number[2:]).one()
         return(ph.id)
     except NoResultFound:
         return False

@@ -1,6 +1,6 @@
 import sys
 sys.path.append('/home/dmitry/dev/SatuKz')
-from .connection import request
+from bitrix.connection import request
 from db.handlers import add_numbers_to_db
 
 def post_new_deal(my_dict=None):
@@ -21,3 +21,9 @@ def save_exist_contact():
                 add_numbers_to_db(id = int(contact['ID']), number = phone_number[2:])
         except:
             next
+
+
+# print(request.get_all('crm.contact.list', params={ 
+#                                                 'select': ['ID', 'PHONE'],
+#                                                   })
+# )

@@ -25,7 +25,7 @@ def orders_dict_to_bitrix(item, bitrix_contact_id=None):
     }
 
     if bitrix_contact_id == None:
-        orders_dict['PHONE'] = [{'VALUE': item['phone']}]
+        orders_dict['fields']['PHONE'] = [{'VALUE': item['phone']}]
 
     return post_new_deal(orders_dict)
 
@@ -46,16 +46,16 @@ def messages_dict_to_bitrix(item, bitrix_contact_id=None):
     }
 
     if bitrix_contact_id == None:
-        messages_dict['PHONE'] = [{'VALUE': item['phone']}]
+        messages_dict['fields']['PHONE'] = [{'VALUE': item['phone']}]
 
     return post_new_deal(messages_dict)
 
 
 def orders_db_work(messages_list, orders_list):
-    save_exist_contact()
     for order in orders_list['orders']:
         if check_sttm_db(order['id']):
             if add_to_db(order['id']):
+                save_exist_contact()
                 if check_number_exist(order['phone']):
                     orders_dict_to_bitrix(order, bitrix_contact_id=check_number_exist(order['phone']))
                 else:
@@ -64,6 +64,7 @@ def orders_db_work(messages_list, orders_list):
     for message in messages_list['messages']:
         if check_sttm_db(message['id']):
             if add_to_db(message['id']):
+                save_exist_contact()
                 if check_number_exist(message['phone']):
                     messages_dict_to_bitrix(message, bitrix_contact_id=check_number_exist(message['phone']))
                 else:

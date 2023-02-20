@@ -80,8 +80,3 @@ class EvoClientExample(object):
 
 
 satu_api = EvoClientExample(AUTH_TOKEN)
-
-order_list = satu_api.get_order_list('status=pending')
-
-message_list = satu_api.get_messages_list('status=unread')
-
