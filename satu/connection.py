@@ -11,15 +11,22 @@ HOST = 'my.satu.kz'  # e.g.: my.prom.ua, my.tiu.ru, my.satu.kz, my.deal.by, my.p
 
 
 class HTTPError(Exception):
+    with open('log', 'r+') as log:
+        log.seek(0, 2)
+        log.write(f'{Exception} \n')
     pass
 
 
 class EvoClientExample(object):
+    '''
+        Class wich takes auth token of satu.kz and made requests to satu api
+    '''
 
     def __init__(self, token):
         self.token = token
 
     def make_request(self, method, url, body=None):
+        '''Function make requests'''
         connection = http.client.HTTPSConnection(HOST)
 
         headers = {'Authorization': 'Bearer {}'.format(self.token),
@@ -40,18 +47,21 @@ class EvoClientExample(object):
         
 
     def get_order_list(self, params=None):
+        '''Function get all orders'''
         url = f'/api/v1/orders/list?{params}'
         method = 'GET'
 
         return self.make_request(method, url)
 
     def get_messages_list(self, params=None):
+        '''Function get all messages'''
         url = f'/api/v1/messages/list?{params}'
         method = 'GET'
 
         return self.make_request(method, url)
 
     def change_message_status(self, id):
+        '''Function changes status of message'''
         url = '/api/v1/messages/set_status'
         data = {
             'status': 'read',
@@ -62,6 +72,7 @@ class EvoClientExample(object):
         return self.make_request(method, url, body=data)
 
     def change_order_status(self, id):
+        '''Function changes status of order'''
         url = f'/api/v1/orders/set_status'
         data = {
             'status': 'received',
@@ -72,10 +83,11 @@ class EvoClientExample(object):
         return self.make_request(method, url, body=data)
 
     def reply_to_message(self, id):
+        '''Function send reply to message'''
         url = '/api/v1/messages/reply'
         data = {
             'id': id,
-            'message': 'Мы получили ваше сообщение и скоро вам перезвоним',
+            'message': 'Мы получили ваше сообщение и скоро вам перезвоним!',
         }
 
         method = 'POST'

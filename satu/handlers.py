@@ -5,6 +5,9 @@ from .connection import satu_api
 
 
 def orders_dict_to_bitrix(item, i, bitrix_contact_id=None):
+    '''
+        Create a dictionary for orders and give it to "post_new_deal" function
+    '''
     managers = [11, 19, 21]
     products = item['products'][0]
     product_title = products['name']
@@ -35,6 +38,9 @@ def orders_dict_to_bitrix(item, i, bitrix_contact_id=None):
 
 
 def messages_dict_to_bitrix(item, i, bitrix_contact_id=None):
+    '''
+        Create a dictionary for messages and give it to "post_new_deal" function
+    '''
     managers = [11, 19, 21]
     subject = item['subject']
     message = item['message']
@@ -62,6 +68,8 @@ def messages_dict_to_bitrix(item, i, bitrix_contact_id=None):
 
 
 def orders_db_work(messages_list, orders_list, i=0):
+    '''Takes all new messages from satu.kz, then chek it with some function.
+    If everything ok, give them to functions wich made a dictionary'''
     for order in orders_list['orders']:
         i += 1
         if i > 2:
