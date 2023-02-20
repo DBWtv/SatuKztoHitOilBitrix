@@ -9,8 +9,10 @@ env.read_env()
 AUTH_TOKEN = env('api_token')  # Your authorization token
 HOST = 'my.satu.kz'  # e.g.: my.prom.ua, my.tiu.ru, my.satu.kz, my.deal.by, my.prom.md
 
+
 class HTTPError(Exception):
     pass
+
 
 class EvoClientExample(object):
 
@@ -38,13 +40,49 @@ class EvoClientExample(object):
         method = 'GET'
 
         return self.make_request(method, url)
-    
-    def get_messages_list(self):
-        url = f'/api/v1/messages/list'
+
+    def get_messages_list(self, params=None):
+        url = f'/api/v1/messages/list?{params}'
         method = 'GET'
 
         return self.make_request(method, url)
 
+    def change_message_status(self, id):
+        url = '/api/v1/messages/set_status'
+        data = {
+            'status': 'read',
+            'ids': [id],
+        }
+        method = 'POST'
 
-print(EvoClientExample(AUTH_TOKEN).get_messages_list())
-    
+        return self.make_request(method, url, body=data)
+
+    def change_order_status(self, id):
+        url = f'/api/v1/orders/set_status'
+        data = {
+            'status': 'received',
+            'ids': [id],
+        }
+        method = 'POST'
+
+        return self.make_request(method, url, body=data)
+
+    def reply_to_message(self, id):
+        url = '/api/v1/messages/reply'
+        data = {
+            'id': id,
+            'message': 'Мы получили ваше сообщение и скоро вам перезвоним',
+        }
+
+        method = 'POST'
+
+        return self.make_request(method, url, body=data)
+
+
+satu_api = EvoClientExample(AUTH_TOKEN)
+
+order_list = satu_api.get_order_list('status=pending')
+
+message_list = satu_api.get_messages_list('status=unread')
+
+print(satu_api.reply_to_message(id=2064102), end='\n\n\n')

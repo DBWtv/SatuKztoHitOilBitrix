@@ -6,7 +6,4 @@ env.read_env()
 
 WEBHOOK = env('webhook')
 
-b = Bitrix(WEBHOOK)
-
-def post_new_deal(my_dict):
-    b.call('crm.lead.add', raw=True, items=my_dict)
+request = Bitrix(WEBHOOK)
