@@ -15,7 +15,7 @@ def orders_dict_to_bitrix(item, i, bitrix_contact_id=None):
             'NAME': item['client_first_name'],
             'SECOND_NAME': item['client_second_name'],
             'LAST_NAME': item['client_last_name'],
-            'SOURCE_DESCRIPTION': products['url'],
+            'WEB': products['url'],
             'HAS_PHONE': 'Y',
             'STATUS_ID': 'NEW',
             'OPENED': 'Y',
@@ -28,6 +28,8 @@ def orders_dict_to_bitrix(item, i, bitrix_contact_id=None):
 
     if bitrix_contact_id == None:
         orders_dict['fields']['PHONE'] = [{'VALUE': item['phone']}]
+
+    satu_api.change_order_status(item['id'])
 
     return post_new_deal(orders_dict)
 
@@ -43,6 +45,7 @@ def messages_dict_to_bitrix(item, i, bitrix_contact_id=None):
             'HAS_PHONE': 'Y',
             'STATUS_ID': 'NEW',
             'OPENED': 'Y',
+            'SOURCE_DESCRIPTION': message,
             'CONTACT_ID': bitrix_contact_id,
             'ASSIGNED_BY_ID': managers[i],
             'CREATED_BY_ID': 0,
@@ -52,6 +55,8 @@ def messages_dict_to_bitrix(item, i, bitrix_contact_id=None):
 
     if bitrix_contact_id == None:
         messages_dict['fields']['PHONE'] = [{'VALUE': item['phone']}]
+    
+    satu_api.reply_to_message(item['id'])
 
     return post_new_deal(messages_dict)
 
@@ -64,7 +69,6 @@ def orders_db_work(messages_list, orders_list, i=0):
         if check_sttm_db(order['id']):
             if add_to_db(order['id']):
                 save_exist_contact()
-                satu_api.change_order_status(order['id'])
                 if check_number_exist(order['phone']):
                     orders_dict_to_bitrix(
                         order, i=i, bitrix_contact_id=check_number_exist(order['phone']))
@@ -78,7 +82,6 @@ def orders_db_work(messages_list, orders_list, i=0):
         if check_sttm_db(message['id']):
             if add_to_db(message['id']):
                 save_exist_contact()
-                satu_api.reply_to_message(message['id'])
                 if check_number_exist(message['phone']):
                     messages_dict_to_bitrix(
                         message, i=i, bitrix_contact_id=check_number_exist(message['phone']))
