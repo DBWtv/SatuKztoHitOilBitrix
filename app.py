@@ -3,14 +3,15 @@ from satu.handlers import orders_db_work
 from satu.connection import satu_api
 from datetime import datetime
 
+
 def main():
     '''
         App takes new orders and messages on satu.kz API.
         Then made deals in bitrix24
     '''
     with open('log', 'r+') as log:
-                    log.seek(0, 2)
-                    log.write(f'{datetime.now()} ... Starting app \n')
+        log.seek(0, 2)
+        log.write(f'{datetime.now()} ... Starting app \n')
     while True:
         order_list = satu_api.get_order_list('status=pending')
         message_list = satu_api.get_messages_list('status=unread')
@@ -19,5 +20,6 @@ def main():
 
         time.sleep(60)
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     main()

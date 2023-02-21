@@ -41,10 +41,9 @@ class EvoClientExample(object):
 
         response_data = response.read()
         with open('log', 'r+') as log:
-                    log.seek(0, 2)
-                    log.write(f'{json.loads(response_data.decode())} \n')
+            log.seek(0, 2)
+            log.write(f'{json.loads(response_data.decode())} \n')
         return json.loads(response_data.decode())
-        
 
     def get_order_list(self, params=None):
         '''Function get all orders'''
@@ -91,6 +90,8 @@ class EvoClientExample(object):
         }
 
         method = 'POST'
+
+        self.change_message_status(id)
 
         return self.make_request(method, url, body=data)
 

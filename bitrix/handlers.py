@@ -1,45 +1,50 @@
 from .connection import request
-from db.handlers import add_numbers_to_db
 from datetime import datetime
+from satu.connection import satu_api
 
-def post_new_deal(my_dict=None):
+
+def post_new_deal(is_message: bool, item_id, my_dict=None):
     '''
         Post a dictionary to "crm.lead.add" bitrix24 method
+        If deal posted - send back to satu.kz answer to message or change status of satu.kz deal
     '''
     response = request.call('crm.lead.add', raw=True, items=my_dict)
+
+    if response['result']:
+        if is_message:
+            satu_api.reply_to_message(item_id)
+        else:
+            satu_api.change_order_status(item_id)
+
     with open('log', 'r+') as log:
         log.seek(0, 2)
         log.write(f'{datetime.now()} ...  {response} \n')
 
-def save_exist_contact():
-    '''
-        Request "crm.contact.list" bitrix method, which give all contacts in bitrix DB
-        If phone is not in PJ DB - append it to it.
-        Strip and delete " ", "-", "()", "+", then takes only 11 and 12 length of string.
-        Its a format of 89999999999 and +79999999999
-        Save it to DB without +7/8, id is CONTACT_ID in bitrtix DB
-    '''
-    contact_list = request.get_all('crm.contact.list', params={'select': ['ID', 'PHONE']})
 
-    chars = ' -()+'
+def save_exist_contact(phone_number):
+    '''
+        Request "crm.contact.list" bitrix method, with search field PHONE
+        Check with given number format = +79999999999. Is not exist check with format = 89999999999
+        Then return id f contact, takes only first. If contact dose not exist = return False
+    '''
 
-    for contact in contact_list:
+    try:
+        '''+7'''
+        contact_id = request.get_all(
+            'crm.contact.list',
+            params={
+                'select': ['ID'],
+                'filter': {'PHONE': phone_number}})[0]['ID']
+    except:
         try:
-            phone_number_raw = contact['PHONE'][0]['VALUE'].strip()
-            phone_number = phone_number_raw.translate(str.maketrans('', '', chars))
-            if len(phone_number) == 11:
-                add_numbers_to_db(id = int(contact['ID']), number = phone_number[1:])
-                with open('log', 'r+') as log:
-                    log.seek(0, 2)
-                    log.write(f'{datetime.now()} {contact["ID"]} add to DB \n')
-            if len(phone_number) == 12:
-                add_numbers_to_db(id = int(contact['ID']), number = phone_number[2:])
-                with open('log', 'r+') as log:
-                    log.seek(0, 2)
-                    log.write(f'{datetime.now()} {contact["ID"]} add to DB \n')
+            '''8'''
+            phone_number = '8' + phone_number[2:]
+            contact_id = request.get_all(
+                'crm.contact.list',
+                params={
+                    'select': ['ID'],
+                    'filter': {'PHONE': phone_number}})[0]['ID']
         except:
-            with open('log', 'r+') as log:
-                log.seek(0, 2)
-                log.write(f'{datetime.now()}  contact not fit: {contact} \n')
-            next
+            contact_id = False
 
+    return contact_id
