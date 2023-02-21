@@ -13,7 +13,7 @@ HOST = 'my.satu.kz'  # e.g.: my.prom.ua, my.tiu.ru, my.satu.kz, my.deal.by, my.p
 class HTTPError(Exception):
     with open('log', 'r+') as log:
         log.seek(0, 2)
-        log.write(f'{Exception} \n')
+        log.write(f'connection error \n')
     pass
 
 
