@@ -4,7 +4,16 @@ from bitrix.handlers import post_new_deal, save_exist_contact
 
 def orders_dict_to_bitrix(item, i, is_message: bool, bitrix_contact_id=None,):
     managers = [11, 19, 21]
-    products = item['products']
+    try:
+        products = item['products']
+        if len(products) == 1:
+            title = products['name']
+        elif len(products) > 1:
+            title = ''
+            for product in products:
+                title += product + '; '
+    except:
+        products = None
 
     if is_message:
         title = item['subject']
@@ -24,13 +33,6 @@ def orders_dict_to_bitrix(item, i, is_message: bool, bitrix_contact_id=None,):
             'params': {'REGISTER_SONET_EVENT': 'Y'}
         }
 
-    if len(products) == 1:
-        title = products['name']
-
-    if len(products) > 1:
-        title = ''
-        for product in products:
-            title += product + '; '
 
     if not is_message:
         orders_dict = {
@@ -58,7 +60,6 @@ def orders_dict_to_bitrix(item, i, is_message: bool, bitrix_contact_id=None,):
 
 def orders_db_work(messages_list, orders_list, i=0):
     for order in orders_list['orders']:
-        i += 1
         if i > 2:
             i = 0
         if add_to_db(order['id']):
@@ -68,9 +69,9 @@ def orders_db_work(messages_list, orders_list, i=0):
                     order, i=i, bitrix_contact_id=contact_id)
             else:
                 orders_dict_to_bitrix(order, i=i)
+        i += 1
 
     for message in messages_list['messages']:
-        i += 1
         if i > 2:
             i = 0
         if add_to_db(message['id']):
@@ -80,3 +81,4 @@ def orders_db_work(messages_list, orders_list, i=0):
                     message, i=i, bitrix_contact_id=contact_id, is_message=True)
             else:
                 orders_dict_to_bitrix(message, i=i, is_message=True)
+        i += 1
