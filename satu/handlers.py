@@ -74,7 +74,7 @@ def orders_db_work(messages_list, orders_list, i=0):
         if i > 2:
             i = 0
         if add_to_db(message['id']):
-            contact_id = save_exist_contact(order['phone'])
+            contact_id = save_exist_contact(message['phone'])
             if contact_id:
                 orders_dict_to_bitrix(
                     message, i=i, bitrix_contact_id=contact_id, is_message=True)
