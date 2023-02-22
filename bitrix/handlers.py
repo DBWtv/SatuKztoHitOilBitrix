@@ -27,7 +27,9 @@ def save_exist_contact(phone_number):
         Check with given number format = +79999999999. Is not exist check with format = 89999999999
         Then return id f contact, takes only first. If contact dose not exist = return False
     '''
-
+    if len(phone_number) == 11:
+        phone_number = '+7' + phone_number[1:]
+        
     try:
         '''+7'''
         contact_id = request.get_all(
