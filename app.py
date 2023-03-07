@@ -18,7 +18,7 @@ def main():
 
         orders_db_work(orders_list=order_list, messages_list=message_list)
 
-        time.sleep(60)
+        time.sleep(60*15)
 
 
 if __name__ == "__main__":
