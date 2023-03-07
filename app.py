@@ -11,7 +11,7 @@ def main():
     '''
     start_time = time.time()
 
-    if time.time() - start_time >= 84600:
+    if time.time() - start_time >= 10:
         start_time = time.time()
         file_name = f'log_{datetime.now().year}-{datetime.now().month}-{datetime.now().day}.txt'
         with open(file_name, 'w') as log:
