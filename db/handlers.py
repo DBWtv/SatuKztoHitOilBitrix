@@ -1,6 +1,7 @@
 from .connection import session, Orders
 from sqlalchemy.exc import NoResultFound
 from datetime import datetime
+from app import file_name
 
 
 def add_to_db(id):
@@ -15,7 +16,7 @@ def add_to_db(id):
         session.add(new)
         session.commit()
         stmt = True
-        with open('log', 'r+') as log:
+        with open(file_name, 'r+') as log:
             log.seek(0, 2)
             log.write(f'{datetime.now()}  {new} write to DB \n')
     return stmt

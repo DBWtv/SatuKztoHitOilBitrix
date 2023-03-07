@@ -2,6 +2,7 @@ from environs import Env
 import json
 import http.client
 from datetime import datetime
+from app import file_name
 
 env = Env()
 env.read_env()
@@ -12,7 +13,7 @@ HOST = 'my.satu.kz'  # e.g.: my.prom.ua, my.tiu.ru, my.satu.kz, my.deal.by, my.p
 
 
 class HTTPError(Exception):
-    with open('log', 'r+') as log:
+    with open(file_name, 'r+') as log:
         log.seek(0, 2)
         log.write(f'connection error \n')
     pass
@@ -41,7 +42,7 @@ class EvoClientExample(object):
             pass
 
         response_data = response.read()
-        with open('log', 'r+') as log:
+        with open(file_name, 'r+') as log:
             log.seek(0, 2)
             log.write(f'{datetime.now()} --- {json.loads(response_data.decode())} \n')
         return json.loads(response_data.decode())
