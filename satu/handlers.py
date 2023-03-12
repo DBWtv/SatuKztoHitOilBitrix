@@ -2,20 +2,25 @@ from db.handlers import add_to_db
 from bitrix.handlers import post_new_deal, save_exist_contact
 
 
-def orders_dict_to_bitrix(item, i, is_message: bool, bitrix_contact_id=None,):
+def orders_dict_to_bitrix(item, i, is_message=False, bitrix_contact_id=None,):
     managers = [11, 19, 21]
+
     try:
         products = item['products']
         if len(products) == 1:
-            title = products['name']
+            title = products[0]['name']
+            prod_url = products[0]['url']
         elif len(products) > 1:
             title = ''
+            prod_url = ''
             for product in products:
+                prod_url += products['url'] + '; '
                 title += product + '; '
     except:
         products = None
+        title = ''
 
-    if is_message:
+    if is_message == True:
         title = item['subject']
         message = item['message']
         orders_dict = {
@@ -33,15 +38,14 @@ def orders_dict_to_bitrix(item, i, is_message: bool, bitrix_contact_id=None,):
             'params': {'REGISTER_SONET_EVENT': 'Y'}
         }
 
-
-    if not is_message:
+    if is_message == False:
         orders_dict = {
             'fields': {
                 'TITLE': title,
                 'NAME': item['client_first_name'],
                 'SECOND_NAME': item['client_second_name'],
                 'LAST_NAME': item['client_last_name'],
-                'WEB': products['url'],
+                'WEB': prod_url,
                 'HAS_PHONE': 'Y',
                 'STATUS_ID': 'NEW',
                 'OPENED': 'Y',

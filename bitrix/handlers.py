@@ -1,6 +1,6 @@
 from .connection import request
-from datetime import datetime
 from satu.connection import satu_api
+
 
 
 def post_new_deal(is_message: bool, item_id, my_dict=None):
@@ -16,9 +16,6 @@ def post_new_deal(is_message: bool, item_id, my_dict=None):
         else:
             satu_api.change_order_status(item_id)
 
-    with open('log', 'r+') as log:
-        log.seek(0, 2)
-        log.write(f'{datetime.now()} ...  {response} \n')
 
 
 def save_exist_contact(phone_number):

@@ -1,6 +1,7 @@
 from environs import Env
 import json
 import http.client
+import logging
 
 env = Env()
 env.read_env()
@@ -9,11 +10,15 @@ env.read_env()
 AUTH_TOKEN = env('api_token')  # Your authorization token
 HOST = 'my.satu.kz'  # e.g.: my.prom.ua, my.tiu.ru, my.satu.kz, my.deal.by, my.prom.md
 
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s %(levelname)s %(message)s',
+    datefmt='%y-%m-%d %H:%M:%S',
+    filename='status.log',
+)
+
 
 class HTTPError(Exception):
-    with open('log', 'r+') as log:
-        log.seek(0, 2)
-        log.write(f'connection error \n')
     pass
 
 
@@ -37,12 +42,11 @@ class EvoClientExample(object):
         connection.request(method, url, body=body, headers=headers)
         response = connection.getresponse()
         if response.status != 200:
+            logging.warning(f'{response.status}')
             pass
 
+        logging.info(f'{response.status}')
         response_data = response.read()
-        with open('log', 'r+') as log:
-            log.seek(0, 2)
-            log.write(f'{json.loads(response_data.decode())} \n')
         return json.loads(response_data.decode())
 
     def get_order_list(self, params=None):
