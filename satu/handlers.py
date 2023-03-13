@@ -61,22 +61,19 @@ def orders_dict_to_bitrix(item, i, is_message=False, bitrix_contact_id=None,):
     return post_new_deal(is_message, item['id'], orders_dict)
 
 
-def orders_db_work(messages_list, orders_list, i=0):
+def orders_db_work(messages_list, orders_list, i):
+    
     for order in orders_list['orders']:
-        if i > 2:
-            i = 0
-        
+
         contact_id = save_exist_contact(order['phone'])
         if contact_id:
             orders_dict_to_bitrix(
                 order, i=i, bitrix_contact_id=contact_id)
         else:
             orders_dict_to_bitrix(order, i=i)
-        i += 1
+        
 
     for message in messages_list['messages']:
-        if i > 2:
-            i = 0
 
         contact_id = save_exist_contact(message['phone'])
         if contact_id:
@@ -84,4 +81,4 @@ def orders_db_work(messages_list, orders_list, i=0):
                 message, i=i, bitrix_contact_id=contact_id, is_message=True)
         else:
             orders_dict_to_bitrix(message, i=i, is_message=True)
-        i += 1
+        
