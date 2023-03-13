@@ -7,3 +7,6 @@ env.read_env()
 WEBHOOK = env('webhook')
 
 request = Bitrix(WEBHOOK)
+
+if __name__=='__main__':
+    pass

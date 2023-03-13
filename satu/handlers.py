@@ -82,3 +82,5 @@ def orders_db_work(messages_list, orders_list, i):
         else:
             orders_dict_to_bitrix(message, i=i, is_message=True)
         
+if __name__=='__main__':
+    pass

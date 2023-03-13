@@ -10,13 +10,15 @@ env.read_env()
 AUTH_TOKEN = env('api_token')  # Your authorization token
 HOST = 'my.satu.kz'  # e.g.: my.prom.ua, my.tiu.ru, my.satu.kz, my.deal.by, my.prom.md
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s %(levelname)s %(message)s',
-    datefmt='%y-%m-%d %H:%M:%S',
-    filename='status.log',
-)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
+formatter = logging.Formatter('%(asctime)s:%(name)s:%(message)s')
+
+file_handler = logging.FileHandler('http_connection.log')
+file_handler.setFormatter(formatter)
+
+logger.addHandler(file_handler)
 
 class HTTPError(Exception):
     pass
@@ -42,10 +44,10 @@ class EvoClientExample(object):
         connection.request(method, url, body=body, headers=headers)
         response = connection.getresponse()
         if response.status != 200:
-            logging.warning(f'{response.status}')
+            logger.error(f' --- Satu connection error, status: {response.status}')
             pass
 
-        logging.info(f'{response.status}')
+        logger.info(f' --- Satu connection OK, status: {response.status}')
         response_data = response.read()
         return json.loads(response_data.decode())
 
@@ -101,3 +103,6 @@ class EvoClientExample(object):
 
 
 satu_api = EvoClientExample(AUTH_TOKEN)
+
+if __name__=='__main__':
+    pass
