@@ -8,6 +8,8 @@ def post_new_deal(is_message: bool, item_id, my_dict=None):
         Post a dictionary to "crm.lead.add" bitrix24 method
         If deal posted - send back to satu.kz answer to message or change status of satu.kz deal
     '''
+
+
     response = request.call('crm.lead.add', raw=True, items=my_dict)
 
     if response['result']:
